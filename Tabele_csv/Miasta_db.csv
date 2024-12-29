@@ -1,21 +1,21 @@
-ID_miasta;Miasto
-1;Cambridge
-2;Braunschweig
-3;Basel
-4;Alexandria
-5;Samos
-6;London
-7;Manchester
-8;Clermont-Ferrand
-9;Beaumont-en-Auge
-10;Paryz
-11;Halle
-12;Jedburgh
-13;Stockholm
-14;Princeton
-15;Descartes
-16;Syracuse
-17;Nancy
-18;Erlangen
-19;Oslo
-20;Wroclaw
+id_miasta;Matematyk;Miasto;Cena
+1;Isaac Newton;Cambridge;1000
+2;Carl Friedrich Gauss;Braunschweig;600
+3;Leonhard Euler;Basel;1700
+4;Euclid;Alexandria;1900
+5;Pythagoras;Samos;1500
+6;Ada Lovelace;London;2300
+7;Alan Turing;Manchester;2100
+8;Blaise Pascal;Clermont-Ferrand;1500
+9;Pierre-Simon Laplace;Beaumont-en-Auge;900
+10;Evariste Galois;Paryz;2000
+11;Georg Cantor;Halle;900
+12;Mary Somerville;Jedburgh;1900
+13;Sofia Kovalevskaya;Stockholm;2400
+14;John Nash;Princeton;5000
+15;Rene Descartes;Descartes;1500
+16;Archimedes;Syracuse;1900
+17;Henri Poincare;Nancy;1700
+18;Emmy Noether;Erlangen;800
+19;Niels Henrik Abel;Oslo;2700
+20;Jerzy Pietraszko;Wroclaw;300
