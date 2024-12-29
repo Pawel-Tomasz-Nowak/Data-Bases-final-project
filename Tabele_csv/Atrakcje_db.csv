@@ -1,0 +1,70 @@
+id_atrakcji;id_miasta;Atrakcja
+1;1;Trinity College
+2;1;Market Square
+3;1;Muzeum Fitzwilliam
+4;1;Ogrod Botaniczny Uniwersytetu Cambridge
+5;2;Burgplatz
+6;2;Gausberg
+7;3;Uniwersytet w Bazylei
+8;3;Katedra w Bazylei
+9;3;Ratusz w Bazylei
+10;4;Biblioteka Aleksandryjska
+11;4;Kolumna Pompejusza
+12;4;Paďż˝ac Montaza
+13;5;Pomnik Pitagorasa w Pythagorion
+14;5;Jaskinia Pitagorasa
+15;5;Swiatynia Hery
+16;6;Science Museum
+17;6;British Museum
+18;6;Palac Buckingham
+19;6;London Eye
+20;6;Tower Bridge
+21;6;Hyde Park
+22;7;Alan Turing Memorial
+23;7;Science and Industry Museum
+24;7;Manchester Cathedral
+25;7;Stadion Old Trafford
+26;8;Pomnik Blaise'a Pascala
+27;8;Miejsce narodzin Blaise'a Pascala
+28;8;Jardin Lecoq
+29;8;Muzeum Henri-Lecoq
+30;9;Statue de Pierre-Simon Laplace
+31;9;Maison natale de Pierre-Simon Laplace
+32;10;Grob Evariste'a Galois na Cmentarzu Montparnasse
+33;10;Tablica pamiatkowa przy Rue Saint-Jacques
+34;10;Ecole Normale Superieure
+35;11;Buste von Georg Cantor im Institut fur Mathematik
+36;11;Denkmal fur Georg Cantor
+37;11;Georg-Cantor-Gymnasium
+38;12;Somerville Museum
+39;12;Opactwo Jedburgh
+40;12;Ratusz w Jedburgh
+41;13;Uniwersytet Sztokholmski
+42;13;Norra begravningsplatsen
+43;13;Muzeum Nobla
+44;13;Muzeum Abby
+45;14;Princeton University Campus
+46;14;Princeton University Chapel
+47;14;Princeton University Fine Hall
+48;14;John Nash's Residence
+49;15;Maison natale de Rene Descartes
+50;15;Statue de Rene Descartes
+51;15;Eglise Saint-Georges
+52;15;Parc Rene Descartes
+53;16;Statue of Archimedes
+54;16;Muzeum Archimedesa
+55;16;Leonardo da Vinci and Archimedes Museum
+56;17;Lycee Henri Poincare
+57;17;Maison natale d'Henri Poincare
+58;17;Universite de Lorraine
+59;18;Dom rodzinny Emmy Noether
+60;18;Emmy-Noether-Gymnasium
+61;19;Abelmonumentet
+62;19;Abelhaugen
+63;19;Niels Henrik Abels vei
+64;20;Wydzial matematyki Politechniki Wroclawskiej
+65;20;Wroclawski Rynek
+66;20;Wyspa Slodowa
+67;20;Ostrow Tumski
+68;20;Hala Stulecia
+69;20;ZOO Wroclaw
