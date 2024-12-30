@@ -1,21 +1,21 @@
-ID_miasta;Miasto;Cena;Matematyk
-1;Cambridge;1000;Isaac Newton
-2;Braunschweig;600;Carl Friedrich Gauss
-3;Basel;1700;Leonhard Euler
-4;Alexandria;1900;Euclid
-5;Samos;1500;Pythagoras
-6;London;2300;Ada Lovelace
-7;Manchester;2100;Alan Turing
-8;Clermont-Ferrand;1500;Blaise Pascal
-9;Beaumont-en-Auge;900;Pierre-Simon Laplace
-10;Paryz;2000;Evariste Galois
-11;Halle;900;Georg Cantor
-12;Jedburgh;1900;Mary Somerville
-13;Stockholm;2400;Sofia Kovalevskaya
-14;Princeton;5000;John Nash
-15;Descartes;1500;Rene Descartes
-16;Syracuse;1900;Archimedes
-17;Nancy;1700;Henri Poincare
-18;Erlangen;800;Emmy Noether
-19;Oslo;2700;Niels Henrik Abel
-20;Wroclaw;300;Jerzy Pietraszko
+ID_miasta;Miasto;Cena;Matematyk;DlugoscWycieczki
+1;Cambridge;1000;Isaac Newton;3
+2;Braunschweig;600;Carl Friedrich Gauss;2
+3;Basel;1700;Leonhard Euler;3
+4;Alexandria;1900;Euclid;3
+5;Samos;1500;Pythagoras;3
+6;London;2300;Ada Lovelace;4
+7;Manchester;2100;Alan Turing;3
+8;Clermont-Ferrand;1500;Blaise Pascal;3
+9;Beaumont-en-Auge;900;Pierre-Simon Laplace;2
+10;Paryz;2000;Evariste Galois;3
+11;Halle;900;Georg Cantor;3
+12;Jedburgh;1900;Mary Somerville;3
+13;Stockholm;2400;Sofia Kovalevskaya;3
+14;Princeton;5000;John Nash;3
+15;Descartes;1500;Rene Descartes;3
+16;Syracuse;1900;Archimedes;3
+17;Nancy;1700;Henri Poincare;3
+18;Erlangen;800;Emmy Noether;2
+19;Oslo;2700;Niels Henrik Abel;3
+20;Wroclaw;300;Jerzy Pietraszko;3
