@@ -4,8 +4,8 @@
   "settings": {
     "width": 2000,
     "height": 2000,
-    "scrollTop": -400.3665,
-    "scrollLeft": -489.624,
+    "scrollTop": -277.993,
+    "scrollLeft": -203.7509,
     "zoomLevel": 0.73,
     "show": 431,
     "database": 4,
@@ -421,15 +421,15 @@
           "t-yQqGR-Cvap5DlK8sTZV"
         ],
         "ui": {
-          "x": 1530.2467,
-          "y": 603.5164,
+          "x": 1512.9291,
+          "y": 435.0232,
           "zIndex": 619,
           "widthName": 74,
           "widthComment": 60,
           "color": ""
         },
         "meta": {
-          "updateAt": 1735570830886,
+          "updateAt": 1735570910052,
           "createAt": 1735421975318
         }
       },
@@ -463,7 +463,7 @@
       "WUIu9lzjmDFxD7LfMsVbH": {
         "id": "WUIu9lzjmDFxD7LfMsVbH",
         "name": "Wynagrodzenia",
-        "comment": "wynagrodzenie zalezy od stanowiska",
+        "comment": "(dzienne) wynagrodzenie zalezy od stanowiska",
         "columnIds": [
           "4M__j92DPuw8Bko3JcRk8",
           "_Jz0eNMd8wA_DScYnsUf8"
@@ -477,11 +477,11 @@
           "y": 777.2,
           "zIndex": 697,
           "widthName": 85,
-          "widthComment": 196,
+          "widthComment": 248,
           "color": ""
         },
         "meta": {
-          "updateAt": 1735423386701,
+          "updateAt": 1735571000717,
           "createAt": 1735423333811
         }
       },
@@ -557,15 +557,15 @@
           "6ysTlYySbbv4EUdiyByE6"
         ],
         "ui": {
-          "x": 1003.5946,
-          "y": 518.31,
+          "x": 982.6991,
+          "y": 572.0413,
           "zIndex": 721,
           "widthName": 88,
           "widthComment": 196,
           "color": ""
         },
         "meta": {
-          "updateAt": 1735570827893,
+          "updateAt": 1735570895552,
           "createAt": 1735570776803
         }
       }
@@ -3775,8 +3775,8 @@
           "columnIds": [
             "u2iDIKv0MZ8a476MftLP2"
           ],
-          "x": 1530.2467,
-          "y": 691.5164,
+          "x": 1512.9291,
+          "y": 523.0232,
           "direction": 1
         },
         "end": {
@@ -3784,8 +3784,8 @@
           "columnIds": [
             "xN7WDimpNgr4782Z1qiqk"
           ],
-          "x": 1394.5946,
-          "y": 570.31,
+          "x": 1373.6991,
+          "y": 624.0413,
           "direction": 2
         },
         "meta": {
@@ -3812,8 +3812,8 @@
           "columnIds": [
             "6ysTlYySbbv4EUdiyByE6"
           ],
-          "x": 1003.5946,
-          "y": 570.31,
+          "x": 982.6991,
+          "y": 624.0413,
           "direction": 1
         },
         "meta": {
@@ -4956,7 +4956,7 @@
       -1,
       {
         "name": 1735423340214,
-        "comment": 1735423384499
+        "comment": 1735571000717
       }
     ],
     "4M__j92DPuw8Bko3JcRk8": [
