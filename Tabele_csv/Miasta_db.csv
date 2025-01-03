@@ -1,4 +1,4 @@
-ID_miasta;Miasto;Cena;Matematyk;Dlugosc_wycieczki
+id_miasta;miasto;cena;matematyk;dlugosc_wycieczki
 1;Cambridge;1000;Isaac Newton;3 days
 2;Braunschweig;600;Carl Friedrich Gauss;2 days
 3;Basel;1700;Leonhard Euler;3 days
