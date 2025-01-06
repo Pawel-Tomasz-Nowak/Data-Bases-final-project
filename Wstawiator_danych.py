@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `Relacje_bliskości` (
 "Transakcje_db.csv": """
 CREATE TABLE IF NOT EXISTS `Transakcje` (
     `id_transakcji` INT PRIMARY KEY,
-    `KWOTA` FLOAT,
+    `kwota` FLOAT,
     `data_transakcji` DATE,
     `id_klienta` INT,
     `id_wycieczki` INT
