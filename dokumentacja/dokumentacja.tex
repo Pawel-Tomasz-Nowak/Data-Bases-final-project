@@ -1,0 +1,180 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage{float}
+
+\author{Kacper Haczkiewicz, Maria Kwintal, Laura Nowak, Paweł Nowak}
+\title{\textbf{Projekt zaliczeniowy - dokumentacja}}
+\date{Styczeń 2024}
+
+\begin{document}
+	
+	\maketitle
+	
+	\section{Wstęp}
+	
+	Celem niniejszej dokumentacji jest szczegółowe przedstawienie komponentów projektu zaliczeniowego z przedmiotu Bazy Danych. Projekt dotyczy firmy Wombat Grylls sp. z o.o. organizującej wycieczki do miast, w których żyli znani matematycy.
+	
+	Dokumentacja zawiera opis wykorzystanych technologii, strukturę plików, graficzny schemat bazy danych, szczegółowy opis tabel, a także relacje pomiędzy nimi. Uwzględniono również podsumowanie pracy nad projektem.
+	
+	\section{Spis użytych technologii}
+	
+	\section{Spis plików}
+	
+	\section{Schemat bazy danych}
+	
+	\subsection{Graficzny schemat bazy}
+	
+	Poniżej znajduje się graficzny schemat bazy danych.
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.2]{diagram.PNG}
+		\caption{Schemat bazy}
+	\end{figure}
+	
+	\subsection{Opis tabel}
+	
+	Baza danych składa się z niżej opisanych tabel. 
+	
+	\begin{enumerate}
+		
+		\item Atrakcje\textunderscore w\textunderscore miescie
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore atrakcji (klucz główny), atrakcja, id\textunderscore miasta (klucz obcy).
+			\item Zależności funkcyjne: id\textunderscore atrakcji → atrakcja, id\textunderscore miasta.
+		\end{itemize}
+		
+		\item Klienci
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore klienta (klucz główny), imie, nazwisko, data\textunderscore urodzenia, znizka, adres\textunderscore email, numer\textunderscore telefonu, status\textunderscore studenta.
+			\item Zależności funkcyjne: id\textunderscore klienta → imie, nazwisko, data\textunderscore urodzenia, znizka, adres\textunderscore email, numer\textunderscore telefonu, status\textunderscore studenta.
+		\end{itemize}
+		
+		\item Miasta
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore miasta (klucz główny), miasto, cena\textunderscore wyjazdu, matematyk, dlugosc\textunderscore wycieczki.
+			\item Zależności funkcyjne: id\textunderscore miasta → miasto, cena\textunderscore wyjazdu, matematyk, dlugosc\textunderscore wycieczki.
+		\end{itemize}
+		
+		\item Osoby\textunderscore bliskie
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore osoby\textunderscore bliskiej (klucz główny), imie, nazwisko, adres\textunderscore email, numer\textunderscore telefonu.
+			\item Zależności funkcyjne: id\textunderscore osoby\textunderscore bliskiej → imie, nazwisko, adres\textunderscore email, numer\textunderscore telefonu.
+		\end{itemize}
+		
+		\item Pracownicy
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore pracownika (klucz główny), imie, nazwisko, stanowisko (klucz obcy), adres\textunderscore email, numer\textunderscore telefonu.
+			\item Zależności funkcyjne: id\textunderscore pracownika → imie, nazwisko, stanowisko (klucz obcy), adres\textunderscore email, numer\textunderscore telefonu.
+		\end{itemize}
+		
+		\item Relacje\textunderscore bliskosci
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore osoby\textunderscore bliskiej (część klucza głównego), id\textunderscore klienta (część klucza głównego).
+		\end{itemize}
+		
+		\item Transakcje
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore transakcji (klucz główny), kwota, data\textunderscore transakcji, id\textunderscore klienta (klucz obcy), id\textunderscore wycieczki (klucz obcy).
+			\item Zależności funkcyjne: id\textunderscore transakcji → kwota, data\textunderscore transakcji, id\textunderscore klienta (klucz obcy), id\textunderscore wycieczki (klucz obcy).
+		\end{itemize}
+		
+		\item Wycieczki
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore wycieczki (klucz główny), data\textunderscore rozpoczecia, odbyla\textunderscore sie, id\textunderscore miasta (klucz obcy).
+			\item Zależności funkcyjne: id\textunderscore wycieczki → data\textunderscore rozpoczecia, odbyla\textunderscore sie, id\textunderscore miasta (klucz obcy).
+		\end{itemize}
+		
+		\item Wycieczki\textunderscore pracownicy
+		\begin{itemize}
+			\item Atrybuty: id\textunderscore wycieczki (część klucza głównego, klucz obcy), id\textunderscore pracownika (część klucza głównego, klucz obcy).
+		\end{itemize}
+		
+		\item Wynagrodzenie
+		\begin{itemize}
+			\item Atrybuty: stanowisko (klucz główny), wynagrodzenie.
+			\item Zależności funkcyjne: stanowisko → wynagrodzenie.
+		\end{itemize}
+		
+	\end{enumerate}
+	
+	\subsection{Opis relacji między tabelami}
+	
+	Pomiędzy tabelami występują następujące relacje.
+	
+	\begin{enumerate}
+		
+		\item Wycieczki i Wycieczki\textunderscore pracownicy
+		\begin{itemize}
+			\item Relacja 1:n - każdy pracownik może być przypisany do wielu wycieczek.
+			\item Klucz główny tabeli Wycieczki (id\textunderscore wycieczki) występuje jako część klucza głównego w tabeli Wycieczki\textunderscore pracownicy.
+		\end{itemize}
+		 
+		\item Wycieczki\textunderscore pracownicy i Pracownicy
+		\begin{itemize}
+			\item Relacja 1:n - każda wycieczka może mieć wielu pracowników.
+			\item Klucz główny tabeli Pracownicy (id\textunderscore pracownika) występuje jako część klucza głównego w tabeli Wycieczki\textunderscore pracownicy.
+		\end{itemize}
+	
+		\item Pracownicy i Wynagrodzenie
+		\begin{itemize}
+			\item Relacja 1:1 - jeden pracownik może mieć jedno wynagrodzenie.
+			\item Klucz główny tabeli Wynagrodzenie (stanowisko) występuje jako klucz obcy w tabeli Pracownicy.
+		\end{itemize}
+
+		\item Wycieczki i Miasta
+		\begin{itemize}
+			\item Relacja 1:n - wiele wycieczek może odbywać się w jednym mieście.
+			\item Klucz główny tabeli Miasta (id\textunderscore miasta) jest kluczem obcym w tabeli Wycieczki.
+		\end{itemize}
+		
+		\item Miasta i Atrakcje\textunderscore w\textunderscore miescie
+		\begin{itemize}
+			\item Relacja 1:n - w jednym mieście może być wiele atrakcji.
+			\item Klucz główny tabeli Miasta (id\textunderscore miasta) jest kluczem obcym w tabeli Atrakcje\textunderscore w\textunderscore miescie.
+		\end{itemize}
+		
+		\item Wycieczki i Transakcje
+		\begin{itemize}
+			\item Relacja 1:n - każda wycieczka może być związana z wieloma transakcjami.
+			\item Klucz główny tabeli Wycieczki (id\textunderscore wycieczki) występuje jako klucz obcy w tabeli Transakcje.
+		\end{itemize}
+		
+		\item Transakcje i Klienci
+		\begin{itemize}
+			\item Relacja 1:n - jeden klient może być związany z wieloma transakcjami.
+			\item Klucz główny tabeli Klienci (id\textunderscore klienta) występuje jako klucz obcy w tabeli Transakcje.
+		\end{itemize}
+		
+		\item Klienci i Relacje\textunderscore bliskosci
+		\begin{itemize}
+			\item Relacja 1:n - jeden klient może mieć wiele przypisanych relacji z osobami bliskimi.
+			\item Klucz główny tabeli Klienci (id\textunderscore klienta) występuje jako klucz obcy w tabeli Relacje\textunderscore bliskosci.
+		\end{itemize}
+		
+		\item Relacje\textunderscore bliskosci i Osoby\textunderscore bliskie: 
+		\begin{itemize}
+			\item Relacja 1:n - jedna osoba bliska może być powiązana z wieloma klientami.
+			\item Klucz główny tabeli Osoby\textunderscore bliskie (id\textunderscore osoby\textunderscore bliskiej) występuje jako klucz obcy w tabeli Relacje\textunderscore bliskosci.
+		\end{itemize}
+		 
+	\end{enumerate}
+	
+	\subsection{Uzasadnienie, że baza jest w EKNF}
+	
+	Baza danych spełnia założenia EKNF, ponieważ:
+	\begin{enumerate}
+		\item Dane przechowywane w tabelach są atomowe (czyli spełnia 1NF).
+		\item Wyeliminowano wszystkie częściowe zależności od jakiegokolwiek klucza potencjalnego (czyli spełnia 2NF).
+		\item Wszystkie atrybuty niekluczowe są zależne tylko i wyłącznie od klucza głównego, a nie od innych atrybutów niekluczowych (czyli spełnia 3NF).
+		\item Każda nietrywialna zależność funkcyjna zaczyna się od nadklucza albo kończy się na
+		atrybucie elementarnym (czyli spełnia EKNF).
+	\end{enumerate}
+	
+	Zatem baza danych jest w EKNF.
+	
+	\section{Podsumowanie projektu}
+	
+\end{document}
