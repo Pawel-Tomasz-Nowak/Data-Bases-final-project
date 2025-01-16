@@ -1,8 +1,11 @@
 ---
-title: "Raport"
+title: "Raport bazy danych"
 author: "Kacper Haczkiewicz, Maria Kwintal, Laura Nowak, Paweł Nowak"
-date: "`r Sys.Date()`"
-output: 
+date: "Styczeń 2025"
+output:
+  pdf_document:
+    toc: true
+    number_section: true
   html_document:
     toc: true
     number_sections: true
@@ -10,6 +13,9 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(ggplot2)
+library(kableExtra)
 ```
 
 ```{r db_connect, echo=FALSE}
@@ -24,16 +30,44 @@ conn <- dbConnect(RMariaDB::MariaDB(),
 
 # Wstęp
 
-Niniejszy raport przedstawia analizę związaną z naszą firmą. Przedstawione będzie
-m. in. opis tych danych, ich analiza (nie wiem co tu dokładnie napisać, na razie coś wstępnie)
+Firma Wom-bat Grylls sp. z o.o. specjalizuje się w organizowaniu wycieczek do miast, które odegrały istotną rolę w historii matematyki. Nasz projekt dotyczy stworzenia kompletnej bazy danych wspierającej organizację takich wyjazdów. Dzięki tej bazie możliwe jest przechowywanie i zarządzanie informacjami o miastach, atrakcjach turystycznych, klientach, pracownikach, a także transakcjach i organizowanych wycieczkach. Projekt ten pozwala na efektywne zarządzanie danymi i umożliwia szybkie tworzenie analiz wspierających decyzje biznesowe.
 
-## Opis danych
+# Opis danych
 
-## Opis analizy
+Nasza baza danych składa się z następujących tabel:
+
+1. **Miasta** - Zawiera informacje o miastach, w których żyli znani matematycy. Przechowywane dane obejmują nazwę miasta, cenę wyjazdu, długość wycieczki oraz nazwisko matematyka związanego z tym miejscem.
+
+2. **Atrakcje w mieście** - Przechowuje dane o atrakcjach turystycznych dostępnych w poszczególnych miastach.
+
+3. **Wycieczki** - Obejmuje informacje o organizowanych wyjazdach, takie jak data rozpoczęcia, czy wycieczka się odbyła oraz do jakiego miasta była skierowana.
+
+4. **Klienci** - Zawiera dane osobowe klientów, takie jak imię, nazwisko, adres e-mail, status studenta oraz przysługujące im zniżki.
+
+5. **Pracownicy** - Informacje o pracownikach zaangażowanych w organizację wycieczek, w tym ich stanowisko oraz dane kontaktowe.
+
+6. **Transakcje** - Rejestruje informacje o zakupach wycieczek przez klientów, takie jak kwota, data transakcji oraz powiązane wycieczki.
+
+7. **Relacje bliskości** - Łączy klientów z ich bliskimi osobami, co umożliwia rejestrację grupowych rezerwacji.
+
+8. **Wynagrodzenie** - Przechowuje informacje o stawkach wynagrodzenia dziennego przypisanych do poszczególnych stanowisk.
+
+9. **Wycieczki i pracownicy** - Łączy wycieczki z przypisanymi do nich pracownikami, co pozwala na tworzenie grafików i zarządzanie zasobami ludzkimi.
+
+# Znaczenie projektu
+
+Baza danych opracowana w ramach tego projektu pełni kluczową rolę w działalności firmy. Umożliwia:
+
+- Efektywne zarządzanie danymi o wycieczkach, klientach i pracownikach.
+- Tworzenie analiz sprzedaży i popularności wycieczek.
+- Planowanie logistyki oraz monitorowanie wyników finansowych.
+
 
 # Wyniki
 
-```{r sql1}
+Jako pierwsze, sprawdźmy na jakie wycieczki jest największe zainteresowanie:
+
+```{r sql1, echo=FALSE}
 
 query1 <- "SELECT 
     m.miasto AS wycieczka,
@@ -51,10 +85,17 @@ ORDER BY
 
 df1 <- dbGetQuery(conn, query1)
 
-head(df1)
-```
+data1 <- head(df1)
 
-```{r sql2}
+kable(data1, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
+```
+Jak widać, najpopularniejszą wycieczką jest `r df1$wycieczka[1]`. 
+Jej liczba zainteresowanych to: `r df1$liczba_osob_zainteresowanych[1]`
+
+Teraz porównamy koszta oraz zyski do najpopularniejszych wycieczek:
+
+```{r sql2, echo=FALSE}
 
 query2 <- "WITH Koszty_Wycieczki AS (
     SELECT 
@@ -115,27 +156,17 @@ ORDER BY
 
 df2 <- dbGetQuery(conn, query2)
 
-head(df2)
-```
-```{r sql3}
-query3 <- "SELECT 
-    EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
-    EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
-    COUNT(DISTINCT T.id_klienta) AS Liczba_Klientow
-FROM 
-    Transakcje T
-GROUP BY 
-    EXTRACT(YEAR FROM T.data_transakcji), EXTRACT(MONTH FROM T.data_transakcji)
-ORDER BY 
-    Rok, Miesiac;"
+data2 <- head(df2)
 
-df3 <- dbGetQuery(conn, query3)
-
-head(df3)
+kable(data2, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
 ```
 
 
-```{r sql4}
+
+
+
+```{r sql4, echo=FALSE}
 query4 <- "WITH Klienci_Wycieczki AS (
     SELECT 
         t.id_klienta,
@@ -177,10 +208,46 @@ ORDER BY
 
 df4 <- dbGetQuery(conn, query4)
 
-head(df4)
+data4 <- head(df4)
+
+kable(data4, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
 ```
 
 ## Wykresy
+
+Poniższy wykres przedstawia liczbę klientów w danym miesiącu
+
+```{r sql3, echo=FALSE}
+query3 <- "SELECT 
+    EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
+    EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
+    COUNT(DISTINCT T.id_klienta) AS Liczba_Klientow
+FROM 
+    Transakcje T
+GROUP BY 
+    EXTRACT(YEAR FROM T.data_transakcji), EXTRACT(MONTH FROM T.data_transakcji)
+ORDER BY 
+    Rok, Miesiac;"
+
+df3 <- dbGetQuery(conn, query3)
+
+df3m <- df3 %>%
+  mutate(Data = as.Date(paste(Rok, Miesiac, "01", sep = "-")),
+         Liczba_Klientow = as.numeric(Liczba_Klientow))
+
+ggplot(df3m, aes(x = Data, y = Liczba_Klientow)) +
+  geom_line(color = "blue", linewidth = 1) +
+  geom_point(color = "darkblue", size = 2) +
+  labs(
+    title = "Liczba obsłużonych klientów w każdym miesiącu",
+    x = "Miesiąc",
+    y = "Liczba klientów"
+  ) +
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "1 month") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
 
 # Wnioski
 
