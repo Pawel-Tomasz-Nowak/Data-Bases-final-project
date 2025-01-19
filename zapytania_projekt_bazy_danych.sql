@@ -9,12 +9,14 @@ JOIN
     Miasta m ON w.id_miasta = m.id_miasta
 LEFT JOIN 
     Transakcje t ON w.id_wycieczki = t.id_wycieczki
--- WHERE 
---    w.odbyla_sie = 1      warunek jakby jednak miały być tylko te co się odbyły
+ WHERE 
+    w.odbyla_sie = 1 
 GROUP BY 
     m.miasto
 ORDER BY 
     liczba_osob_zainteresowanych DESC;
+
+
 
 --  koszta i zyski, czy opłacalne  i ile wycieczek sie odbyło
 WITH Koszty_Wycieczki AS (
@@ -76,7 +78,8 @@ ORDER BY
 
 
 
--- liczba obsłużonych klientów w każdym miesiącu działalności firmy, czy firma rośnie, czy podupada?
+
+-- 2. liczba obsłużonych klientów w każdym miesiącu działalności firmy, czy firma rośnie, czy podupada?
 SELECT 
     EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
     EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
@@ -88,7 +91,9 @@ GROUP BY
 ORDER BY 
     Rok, Miesiac;
 
--- po których wycieczkach klienci wracają na kolejne, a po których mają dość i więcej ich nie widzicie. Czy są takie, które być może powinny zniknąć z oferty?
+
+
+-- 3. po których wycieczkach klienci wracają na kolejne, a po których mają dość i więcej ich nie widzicie. Czy są takie, które być może powinny zniknąć z oferty?
 WITH Klienci_Wycieczki AS (
     SELECT 
         t.id_klienta,
@@ -127,3 +132,76 @@ JOIN
     Miasta m ON w.id_miasta = m.id_miasta
 ORDER BY 
     procent_powrotow DESC;
+    
+
+
+
+-- 4. Jakie jest średnie obłożenie wycieczek do poszczególnych miast?
+SELECT 
+    m.miasto AS wycieczka,
+    ROUND(AVG(liczba_klientow), 2) AS średnia_liczba_klientów
+FROM (
+    SELECT 
+        w.id_wycieczki,
+        w.id_miasta,
+        COUNT(t.id_klienta) AS liczba_klientow
+    FROM 
+        Wycieczki w
+    LEFT JOIN 
+        Transakcje t ON w.id_wycieczki = t.id_wycieczki
+    GROUP BY 
+        w.id_wycieczki, w.id_miasta
+) WycieczkiOblozenie
+JOIN 
+    Miasta m ON WycieczkiOblozenie.id_miasta = m.id_miasta
+GROUP BY 
+    m.miasto
+ORDER BY 
+    średnia_liczba_klientów DESC;
+
+
+
+-- 5. Jaki jest udział poszczególnych miast w całkowitych przychodach?
+SELECT 
+    m.miasto AS miasto,
+    SUM(t.kwota) AS przychody_miasta,
+    ROUND((SUM(t.kwota) * 100.0) / (SELECT SUM(kwota) FROM Transakcje), 2) AS udzial_procentowy
+FROM 
+    Transakcje t
+JOIN 
+    Wycieczki w ON t.id_wycieczki = w.id_wycieczki
+JOIN 
+    Miasta m ON w.id_miasta = m.id_miasta
+GROUP BY 
+    m.miasto
+ORDER BY 
+    przychody_miasta DESC;
+
+
+
+-- 6. Jakie są najpopularniejsze kombinacje dwóch wycieczek odwiedzanych przez tych samych klientów?
+SELECT 
+    m1.miasto AS wycieczka_1,
+    m2.miasto AS wycieczka_2,
+    COUNT(DISTINCT t1.id_klienta) AS liczba_klientow
+FROM 
+    Transakcje t1
+JOIN 
+    Transakcje t2 ON t1.id_klienta = t2.id_klienta AND t1.id_wycieczki < t2.id_wycieczki
+JOIN 
+    Wycieczki w1 ON t1.id_wycieczki = w1.id_wycieczki
+JOIN 
+    Wycieczki w2 ON t2.id_wycieczki = w2.id_wycieczki
+JOIN 
+    Miasta m1 ON w1.id_miasta = m1.id_miasta
+JOIN 
+    Miasta m2 ON w2.id_miasta = m2.id_miasta
+GROUP BY 
+    m1.miasto, m2.miasto
+ORDER BY 
+    liczba_klientow DESC
+LIMIT 10;
+
+
+
+
