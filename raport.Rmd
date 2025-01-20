@@ -191,15 +191,17 @@ Powroty AS (
 )
 SELECT 
     m.miasto AS wycieczka,
-    p.liczba_klientow,
-    p.liczba_powracajacych,
-    ROUND((p.liczba_powracajacych * 100.0) / p.liczba_klientow, 2) AS procent_powrotow
+    SUM(p.liczba_klientow) AS liczba_klientow,
+    SUM(p.liczba_powracajacych) AS liczba_powracajacych,
+    ROUND((SUM(p.liczba_powracajacych) * 100.0) / SUM(p.liczba_klientow), 2) AS procent_powrotow
 FROM 
     Powroty p
 JOIN 
     Wycieczki w ON p.pierwsza_wycieczka = w.id_wycieczki
 JOIN 
     Miasta m ON w.id_miasta = m.id_miasta
+GROUP BY 
+    m.miasto
 ORDER BY 
     procent_powrotow DESC;"
 
@@ -285,24 +287,27 @@ ORDER BY
 
 df3 <- dbGetQuery(conn, query3)
 
-df3m <- df3 %>%
-  mutate(Data = as.Date(paste(Rok, Miesiac, "01", sep = "-")),
-         Liczba_Klientow = as.numeric(Liczba_Klientow))
+df3_filtered <- df3[df3$Miesiac >= 6 & df3$Miesiac <= 9, ]
 
-ggplot(df3m, aes(x = Data, y = Liczba_Klientow)) +
-  geom_line(color = "magenta", linewidth = 1) +
-  geom_point(color = "purple", size = 2) +
+# Tworzenie wykresu słupkowego
+ggplot(df3_filtered, aes(x = factor(Miesiac, levels = 6:9), 
+                         y = Liczba_Klientow, 
+                         fill = factor(Rok))) +
+  geom_bar(stat = "identity", position = "dodge", color = "black") +
+  scale_fill_manual(values = c("magenta3", "purple", "lightyellow", "lightblue", "lightgreen",
+                               "lightcyan")) +
   labs(
-    title = "Liczba obsłużonych klientów w każdym miesiącu",
+    title = "Liczba klientów w miesiącach letnich (czerwiec-wrzesień)",
     x = "Miesiąc",
-    y = "Liczba klientów"
+    y = "Liczba klientów",
+    fill = "Rok"
   ) +
-  scale_x_date(date_labels = "%Y-%m", date_breaks = "1 month") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  theme(axis.text.x = element_text(size = 10),
+        legend.position = "top")
 ```
 
-
+Udział procentowy w miastach:
 
 ```{r wykres, echo=FALSE}
 sql6 <- "SELECT 
@@ -366,8 +371,6 @@ ggplot(df5, aes(x=wycieczka, y=średnia_liczba_klientów, fill=wycieczka))+
 
 
 
-
-# Wnioski
 
 ```{r db-close, echo=FALSE}
 dbDisconnect(conn)
