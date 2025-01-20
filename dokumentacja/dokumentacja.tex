@@ -14,7 +14,7 @@
 	
 	\section{Wstęp}
 	
-	Celem niniejszej dokumentacji jest szczegółowe przedstawienie komponentów projektu zaliczeniowego z przedmiotu Bazy Danych. Projekt dotyczy firmy Wombat Grylls sp. z o.o. organizującej wycieczki do miast, w których żyli znani matematycy.
+	Celem niniejszej dokumentacji jest szczegółowe przedstawienie komponentów projektu zaliczeniowego z przedmiotu Bazy Danych. Projekt dotyczy firmy Wombat Grylls sp. z o.o. organizującej wycieczki do miast, w których żyli znani matematycy. Dzięki niżej opisanej bazie danych możliwe jest przechowywanie i zarządzanie informacjami o miastach, klientach, pracownikach czy transakcjach związanych z firmą.
 	
 	Dokumentacja zawiera opis wykorzystanych technologii, strukturę plików, graficzny schemat bazy danych oraz szczegółowy opis tabel i relacji pomiędzy nimi. Uwzględniono również podsumowanie pracy nad projektem.
 	
@@ -49,15 +49,28 @@
 		\item dokumentacja – katalog zawiera:
 		\begin{itemize}
 			\item dokumentacja.tex – kod źródłowy LaTeX, użyty do przygotowania dokumentacji projektu.
+			\item dokumentacja.pdf - dokumentacja projektu w wersji PDF.
 			\item diagram.PNG – graficzny schemat bazy danych.
 		\end{itemize}
-		\item generator\textunderscore danych.ipynb - skrypt w formacie Jupyter Notebook odpowiedzialny za generowanie danych. Dane te są zapisywane w katalogu Tabele\textunderscore csv.
+		\item generator\textunderscore danych.py - skrypt Pythona odpowiedzialny za generowanie danych. Dane te są zapisywane w katalogu Tabele\textunderscore csv.
 		\item Imiona i nazwiska - katalog zawierający pliki CSV z danymi o popularnych imionach i nazwiskach, wykorzystywanymi przy generowaniu danych.
 		\item raport.Rmd - zawierający kod źródłowy R, który generuje raport.
 		\item schemat\textunderscore bazy.vuerd - plik zawiera schemat bazy danych w formacie ERD.
 		\item Tabele\textunderscore csv - katalog zawierający wygenerowane wcześniej pliki csv z danymi, które wstawiane są następnie do bazy danych.
-		\item Wstawiator\textunderscore danych.ipynb - skrypt w formacie Jupyter Notebook odpowiedzialny za wstawianie danych z katalogu Tabele\textunderscore csv do bazy danych.
+		\item Wstawiator\textunderscore danych.py - skrypt w Pythonie odpowiedzialny za wstawianie danych z katalogu Tabele\textunderscore csv do bazy danych.
 		\item wycieczki.csv - plik zawierający informacje o rodzajach wycieczek czy kosztach biletów.
+	\end{enumerate}
+	
+	\section{Kolejność i sposób uruchamiania plików}
+	
+	Do uruchomienia projektu należy posiadać niezbędny sprzęt (tj. komputer z systemem Windows z wersją przynajmniej 10 i dostępem do internetu). Należy również posiadać Python w wersji przynajmniej 3.11, R 4.4.2, LaTeX oraz dowolne środowiska programistyczne pozwalające na kompilację bądź interpretację powyższych plików.
+	
+	W celu uruchomienia projektu należy uruchomić następujące pliki w podanej kolejności.
+	
+	\begin{enumerate}
+		\item generator\textunderscore danych.py
+		\item Wstawiator\textunderscore danych.py
+		\item raport.Rmd
 	\end{enumerate}
 	
 	\section{Schemat bazy danych}
@@ -213,5 +226,9 @@
 	Zatem baza danych jest w EKNF.
 	
 	\section{Podsumowanie projektu}
+	
+	Podczas realizacji projektu wyzwaniem okazało się zaplanowanie i przygotowanie schematu bazy danych. Był to kluczowy etap pracy nad projektem, ponieważ na nim opierała się reszta jego realizacji. Wymagające było również generowanie danych. Proces ten okazał się czasochłonny i wymagał zaawansowanej wiedzy z zakresu pisania skomplikowanych skryptów w Pythonie.
+	
+	Pomimo różnych trudności projekt pozwolił nam znacząco rozwinąć umiejętności z zakresu pracy z bazami danych. Ponadto pozwolił nam rozwinąć się w pracy zespołowej, szczególnie w rozdzielaniu zadań oraz efektywnej współpracy. To doświadczenie może okazać się przydatne w przyszłej pracy zawodowej.
 	
 \end{document}
