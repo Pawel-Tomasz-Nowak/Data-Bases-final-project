@@ -203,5 +203,20 @@ ORDER BY
 LIMIT 10;
 
 
+-- średnia bliskich
+
+SELECT 
+    ROUND(AVG(liczba_bliskich), 2) AS srednia_liczba_bliskich
+FROM (
+    SELECT 
+        id_klienta,
+        COUNT(id_osoby_bliskiej) AS liczba_bliskich
+    FROM 
+        Relacje_bliskości
+    GROUP BY 
+        id_klienta
+) AS liczby_bliskich_na_klienta;
+
+
 
 
