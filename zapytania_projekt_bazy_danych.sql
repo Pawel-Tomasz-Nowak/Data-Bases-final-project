@@ -220,3 +220,45 @@ FROM (
 
 
 
+
+WITH Klienci_Wycieczki AS (
+    SELECT 
+        t.id_klienta,
+        t.id_wycieczki
+    FROM 
+        Transakcje t
+    JOIN 
+        Wycieczki w ON t.id_wycieczki = w.id_wycieczki
+    WHERE 
+        w.odbyla_sie = 1
+),
+Powroty AS (
+    SELECT 
+        kw1.id_wycieczki AS pierwsza_wycieczka,
+        COUNT(DISTINCT kw1.id_klienta) AS liczba_klientow,
+        COUNT(DISTINCT CASE 
+            WHEN kw2.id_wycieczki IS NOT NULL AND kw1.id_wycieczki != kw2.id_wycieczki THEN kw1.id_klienta
+        END) AS liczba_powracajacych
+    FROM 
+        Klienci_Wycieczki kw1
+    LEFT JOIN 
+        Klienci_Wycieczki kw2 ON kw1.id_klienta = kw2.id_klienta
+    GROUP BY 
+        kw1.id_wycieczki
+)
+SELECT 
+    m.miasto AS wycieczka,
+    SUM(p.liczba_klientow) AS liczba_klientow,
+    SUM(p.liczba_powracajacych) AS liczba_powracajacych,
+    ROUND((SUM(p.liczba_powracajacych) * 100.0) / SUM(p.liczba_klientow), 2) AS procent_powrotow
+FROM 
+    Powroty p
+JOIN 
+    Wycieczki w ON p.pierwsza_wycieczka = w.id_wycieczki
+JOIN 
+    Miasta m ON w.id_miasta = m.id_miasta
+GROUP BY 
+    m.miasto
+ORDER BY 
+    procent_powrotow ASC;
+
