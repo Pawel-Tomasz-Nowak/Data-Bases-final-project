@@ -62,9 +62,11 @@ Baza danych opracowana w ramach tego projektu pełni kluczową rolę w działaln
 
 # Wyniki
 
+## Wynik 1
+
 Jako pierwsze, sprawdźmy na jakie wycieczki jest największe zainteresowanie:
 
-```{r sql1, echo=FALSE}
+```{r wynik1, echo=FALSE}
 
 query1 <- "SELECT 
     m.miasto AS wycieczka,
@@ -90,9 +92,11 @@ kable(data1, caption = "Liczba osób zainteresowanych na poszczególne wycieczki
 Jak widać, najpopularniejszą wycieczką jest `r df1$wycieczka[1]`. 
 Jej liczba zainteresowanych to: `r df1$liczba_osob_zainteresowanych[1]`
 
+## Wynik 2
+
 Teraz porównamy koszta oraz zyski do najpopularniejszych wycieczek:
 
-```{r sql2, echo=FALSE}
+```{r wynik2, echo=FALSE}
 
 query2 <- "WITH Koszty_Wycieczki AS (
     SELECT 
@@ -161,10 +165,10 @@ Zysk tej wycieczki wynosi: `r data2$zysk[1]`, a przychód: `r data2$przychód[1]
 Nieopłacalna wycieczka jest do miasta `r data2$wycieczka[data2$oplacalnosc=="nieoplacalna"]`.
 
 
+## Wynik 3
 
-
-```{r sql4, echo=FALSE}
-query4 <- "WITH Klienci_Wycieczki AS (
+```{r wynik3, echo=FALSE}
+query3 <- "WITH Klienci_Wycieczki AS (
     SELECT 
         t.id_klienta,
         t.id_wycieczki
@@ -205,22 +209,21 @@ GROUP BY
 ORDER BY 
     procent_powrotow DESC;"
 
-df4 <- dbGetQuery(conn, query4)
+data3 <- dbGetQuery(conn, query3)
 
-data4 <- head(df4)
-
-kable(df4, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
+kable(data3, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
 ```
-Jak wynika z tabeli, najchętniej (`r df4$procent_powrotow[1]`%) klientów powraca 
-do miasta `r df4$wycieczka[1]`. Najmniej osób (`r tail(df4$procent_powrotow,1)`%)
-ponownie wybiera się do `r tail(df4$wycieczka, 1)`.
+Jak wynika z tabeli, najchętniej (`r data3$procent_powrotow[1]`%) klientów powraca 
+do miasta `r data3$wycieczka[1]`. Najmniej osób (`r tail(data3$procent_powrotow,1)`%)
+ponownie wybiera się do `r tail(data3$wycieczka, 1)`.
 
+## Wynik 4
 
 W poniższej tabeli pokazane jest, na jakie dwie wycieczki najchętniej wybierają
 się nasi klienci:
-```{r sql7, echo=FALSE}
-sql7 <- "SELECT 
+```{r wynik4, echo=FALSE}
+query4 <- "SELECT 
     m1.miasto AS wycieczka_1,
     m2.miasto AS wycieczka_2,
     COUNT(DISTINCT t1.id_klienta) AS liczba_klientow
@@ -242,17 +245,19 @@ ORDER BY
     liczba_klientow DESC
 LIMIT 10;"
 
-df7 <- dbGetQuery(conn, sql7)
+data4 <- dbGetQuery(conn, query4)
 
-kable(df7, caption = "Najpopularniejsze kombinacje dwóch wycieczek odwiedzanych przez tych samych klientów", align = "l") %>%
+kable(data4, caption = "Najpopularniejsze kombinacje dwóch wycieczek odwiedzanych przez tych samych klientów", align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
 ```
-Wynika z tego, że najwięcej osób z chęcią wybiera się do `r df7$wycieczka_1[1]`
-oraz `r df7$wycieczka_2[1]`.
+Wynika z tego, że najwięcej osób z chęcią wybiera się do `r data4$wycieczka_1[1]`
+oraz `r data4$wycieczka_2[1]`.
 
 
-```{r sql8, echo=FALSE}
-sql8 <- "SELECT 
+## Wynik 5 - średnia liczba
+
+```{r wynik5, echo=FALSE}
+query5 <- "SELECT 
     ROUND(AVG(liczba_bliskich), 2) AS srednia_liczba_bliskich
 FROM (
     SELECT 
@@ -264,17 +269,19 @@ FROM (
         id_klienta
 ) AS liczba_bliskich_na_klienta;"
 
-df8 <- dbGetQuery(conn, sql8)
+data5 <- dbGetQuery(conn, query5)
 ```
 
-Średnia liczba osób bliskich wynosi: `r df8$srednia_liczba_bliskich`.
+Analizując nasze dane z obecnych lat możemy wywnioskować, że średnia liczba osób bliskich, która uczestniczyła w naszych wycieczkach wynosi: `r data5$srednia_liczba_bliskich`.
 
-## Wykresy
+# Wykresy
+
+## Wykres 1
 
 Poniższy wykres przedstawia liczbę klientów w danym miesiącu
 
-```{r sql3, echo=FALSE}
-query3 <- "SELECT 
+```{r wykres1, echo=FALSE}
+query6 <- "SELECT 
     EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
     EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
     COUNT(DISTINCT T.id_klienta) AS Liczba_Klientow
@@ -285,12 +292,12 @@ GROUP BY
 ORDER BY 
     Rok, Miesiac;"
 
-df3 <- dbGetQuery(conn, query3)
+data6 <- dbGetQuery(conn, query6)
 
-df3_filtered <- df3[df3$Miesiac >= 6 & df3$Miesiac <= 9, ]
+data6_filtered <- data6[data6$Miesiac >= 6 & data6$Miesiac <= 9, ]
 
 # Tworzenie wykresu słupkowego
-ggplot(df3_filtered, aes(x = factor(Miesiac, levels = 6:9), 
+ggplot(data6_filtered, aes(x = factor(Miesiac, levels = 6:9), 
                          y = Liczba_Klientow, 
                          fill = factor(Rok))) +
   geom_bar(stat = "identity", position = "dodge", color = "black") +
@@ -305,12 +312,39 @@ ggplot(df3_filtered, aes(x = factor(Miesiac, levels = 6:9),
   theme_minimal() +
   theme(axis.text.x = element_text(size = 10),
         legend.position = "top")
+
+# Sumujemy liczbę klientów w miesiącach letnich dla każdego roku
+data6_summary <- data6_filtered %>%
+  group_by(Rok) %>%
+  summarise(Laczna_Liczba_Klientow = sum(Liczba_Klientow)) %>%
+  arrange(Rok)
+
+# Obliczamy różnicę liczby klientów rok do roku
+data6_summary <- data6_summary %>%
+  mutate(Diff = Laczna_Liczba_Klientow - lag(Laczna_Liczba_Klientow))
+
+
+if (all(data6_summary$Diff[-1] > 0, na.rm = TRUE)) {
+  wniosek <- "Firma rośnie. Liczba klientów systematycznie wzrasta w miesiącach letnich w kolejnych latach."
+} else if (all(data6_summary$Diff[-1] < 0, na.rm = TRUE)) {
+  wniosek <- "Firma podupada. Liczba klientów systematycznie maleje w miesiącach letnich w kolejnych latach."
+} else if (any(data6_summary$Diff[-1] > 0, na.rm = TRUE) & any(data6_summary$Diff[-1] < 0, na.rm = TRUE)) {
+  wniosek <- "Trendy liczby klientów są niestabilne. Liczba klientów w miesiącach letnich wykazuje wahania w różnych latach."
+} else {
+  wniosek <- "Dane są zbyt ograniczone, by jednoznacznie stwierdzić, czy firma rośnie, czy podupada."
+}
+
 ```
+
+Patrząc na wykres można wysnuć wniosek: `r wniosek`
+
+
+## Wykres 2
 
 Udział procentowy w miastach:
 
-```{r wykres, echo=FALSE}
-sql6 <- "SELECT 
+```{r wykres2, echo=FALSE}
+query7 <- "SELECT 
     m.miasto AS miasto,
     SUM(t.kwota) AS przychody_miasta,
     ROUND((SUM(t.kwota) * 100.0) / (SELECT SUM(kwota) FROM Transakcje), 2) AS udzial_procentowy
@@ -325,19 +359,22 @@ GROUP BY
 ORDER BY 
     przychody_miasta DESC;"
 
-df6 <- dbGetQuery(conn, sql6)
+data7 <- dbGetQuery(conn, query7)
 
-ggplot(df6, aes(x = miasto, y = udzial_procentowy, fill = miasto)) +
+ggplot(data7, aes(x = miasto, y = udzial_procentowy, fill = miasto)) +
   geom_bar(stat = "identity", width = 1, color = "white", alpha = 0.6) +
   theme(legend.title = element_blank()) +
   theme(axis.text.x = element_blank()) +
   labs(y="Procent" ,title = "Udział procentowy miast w przychodach")
 ```
 
+<Tu wniosek jakiś...>
+
+## Wykres 3
 
 Poniższy wykres słupkowy przedstawia, jaka jest średnia klientów na dany wyjazd:
-```{r sql5, echo=FALSE}
-sql5 <- "SELECT 
+```{r wykres3, echo=FALSE}
+query8 <- "SELECT 
     m.miasto AS wycieczka,
     ROUND(AVG(liczba_klientow), 2) AS średnia_liczba_klientów
 FROM (
@@ -359,9 +396,9 @@ GROUP BY
 ORDER BY 
     średnia_liczba_klientów DESC;"
 
-df5 <- dbGetQuery(conn, sql5)
+data8 <- dbGetQuery(conn, query8)
 
-ggplot(df5, aes(x=wycieczka, y=średnia_liczba_klientów, fill=wycieczka))+
+ggplot(data8, aes(x=wycieczka, y=średnia_liczba_klientów, fill=wycieczka))+
   geom_bar(stat = "identity") +
   ggtitle("Średnia liczba osób na wycieczki w danym mieście")+
   labs(x = "Miasto", y = "Średnia liczba osób")+
@@ -369,6 +406,7 @@ ggplot(df5, aes(x=wycieczka, y=średnia_liczba_klientów, fill=wycieczka))+
   theme(axis.text.x = element_blank())
 ```
 
+<I tutaj też wniosek jakiś by się przydał...>
 
 
 
