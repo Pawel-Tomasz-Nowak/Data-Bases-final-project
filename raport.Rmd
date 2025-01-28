@@ -27,7 +27,7 @@ conn <- dbConnect(RMariaDB::MariaDB(),
 
 # Wstęp
 
-Firma Wom-bat Grylls sp. z o.o. specjalizuje się w organizowaniu wycieczek do miast, które odegrały istotną rolę w historii matematyki. W ramach naszego projektu opracowujemy kompletną bazę danych wspierającą organizację takich wyjazdów. Umożliwia ona przechowywanie i zarządzanie informacjami o miastach, atrakcjach turystycznych, klientach, pracownikach, a także transakcjach i organizowanych wycieczkach. Projekt ten pozwala na efektywne zarządzanie danymi i umożliwia szybkie tworzenie analiz wspierających decyzje biznesowe.
+Firma Wombat Grylls sp. z o.o. specjalizuje się w organizowaniu wycieczek do miast, które odegrały istotną rolę w historii matematyki. W ramach naszego projektu opracowujemy kompletną bazę danych wspierającą organizację takich wyjazdów. Umożliwia ona przechowywanie i zarządzanie informacjami o miastach, atrakcjach turystycznych, klientach, pracownikach, a także transakcjach i organizowanych wycieczkach. Projekt ten pozwala na efektywne zarządzanie danymi i umożliwia szybkie tworzenie analiz wspierających decyzje biznesowe.
 
 # Opis danych
 
@@ -86,11 +86,19 @@ df1 <- dbGetQuery(conn, query1)
 
 data1 <- head(df1)
 
-kable(data1, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
-  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
+data1 <- data1 %>%
+  rename(
+    Wycieczka = wycieczka,
+    "Liczba osób zainteresowanych" = liczba_osob_zainteresowanych
+  )
+
+kable(data1, align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))%>%
+  row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
+  kableExtra::add_header_above(c("Liczba osób zainteresowanych na poszczególne wycieczki" = 2), bold = TRUE, color = "white", background = "#b9b9b9")
 ```
-Jak widać, najpopularniejszą wycieczką jest `r df1$wycieczka[1]`. 
-Liczba zainteresowanych nią osób to: `r df1$liczba_osob_zainteresowanych[1]`
+Jak widać, najpopularniejszą wycieczką jest `r data1$Wycieczka[1]`. 
+Liczba zainteresowanych nią osób to: `r data1$"Liczba osób zainteresowanych"[1]`
 
 ## Wynik 2
 
@@ -155,14 +163,54 @@ GROUP BY
 ORDER BY 
     zysk DESC;"
 
-data2 <- dbGetQuery(conn, query2)
+df2 <- dbGetQuery(conn, query2)
 
-kable(data2, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
-  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
+data2_oplacalna <- df2 %>%
+  filter(oplacalnosc == 'oplacalna') %>%
+  select(wycieczka, liczba_wycieczek, koszt, przychód, zysk)%>%
+    rename(
+    Wycieczka = wycieczka,
+    "Liczba Wycieczek" = liczba_wycieczek,
+    Koszt = koszt,
+    Przychód = przychód,
+    Zysk = zysk
+  )
+
+
+
+kable(data2_oplacalna, align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
+  row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
+  kableExtra::add_header_above(c("Opłacalne Wycieczki" = 5), bold = TRUE, color = "white", background = "#b9b9b9") %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
 ```
-Łatwo widać, że największe zyski przynosi nam wycieczka `r data2$wycieczka[1]`. 
-Zysk tej wycieczki wynosi: `r data2$zysk[1]`, a przychód: `r data2$przychód[1]`.
-Nieopłacalna jest za to wycieczka do miasta `r data2$wycieczka[data2$oplacalnosc=="nieoplacalna"]`.
+
+
+Łatwo widać, że największe zyski przynosi nam wycieczka `r data2_oplacalna$Wycieczka[1]`. 
+Zysk tej wycieczki wynosi: `r format(data2_oplacalna$Zysk[1], scientific = FALSE)`, a przychód: `r format(data2_oplacalna$Przychód[1], scientific = FALSE)`.
+
+
+
+```{r nieoplacalna, echo=FALSE}
+data2_nieoplacalna <- df2 %>%
+  filter(oplacalnosc == 'nieoplacalna') %>%
+  select(wycieczka, liczba_wycieczek, koszt, przychód, zysk)%>%
+    rename(
+    Wycieczka = wycieczka,
+    "Liczba Wycieczek" = liczba_wycieczek,
+    Koszt = koszt,
+    Przychód = przychód,
+    Zysk = zysk
+  )
+
+kable(data2_nieoplacalna, align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
+  row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
+  kableExtra::add_header_above(c("Nieopłacalne Wycieczki" = 5), bold = TRUE, color = "white", background = "#b9b9b9")
+```
+
+
+Nieopłacalna jest za to wycieczka do miasta `r data2_nieoplacalna$Wycieczka`.
 
 
 ## Wynik 3
@@ -213,12 +261,23 @@ ORDER BY
 
 data3 <- dbGetQuery(conn, query3)
 
-kable(data3, caption = "Liczba osób zainteresowanych na poszczególne wycieczki", align = "l") %>%
-  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
+data3 <- data3 %>%
+  rename(
+    Wycieczka = wycieczka,
+    "Liczba klientów" = liczba_klientow,
+    "Liczba powracających" = liczba_powracajacych,
+    Procent = procent_powrotow
+  )
+
+kable(data3, align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
+  row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
+  kableExtra::add_header_above(c("Liczba osób powracających na nasze wycieczki" = 4), bold = TRUE, color = "white", background = "#b9b9b9") %>%
+  kableExtra::scroll_box(width = "100%", height = "400px")
 ```
-Jak wynika z tabeli, najwięcej (`r data3$procent_powrotow[1]`%) klientów powraca 
-do miasta `r data3$wycieczka[1]`. Najmniej osób (`r tail(data3$procent_powrotow,1)`%)
-ponownie wybiera się do `r tail(data3$wycieczka, 1)`.
+Jak wynika z tabeli, najwięcej (`r data3$Procent[1]`%) klientów powraca 
+do miasta `r data3$Wycieczka[1]`. Najmniej osób (`r tail(data3$Procent,1)`%)
+ponownie wybiera się do `r tail(data3$Wycieczka, 1)`.
 
 ## Wynik 4
 
@@ -248,16 +307,26 @@ LIMIT 10;"
 
 data4 <- dbGetQuery(conn, query4)
 
-kable(data4, caption = "Najpopularniejsze kombinacje dwóch wycieczek odwiedzanych przez tych samych klientów", align = "l") %>%
-  kable_styling(bootstrap_options = c("striped", "bordered", "hover"))
+data4 <- data4 %>%
+  rename(
+    "Wycieczka pierwsza" = wycieczka_1,
+    "Wycieczka druga" = wycieczka_2,
+    "Liczba klientów" = liczba_klientow
+  )
+
+kable(data4, align = "l") %>%
+  kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
+  row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
+  kableExtra::add_header_above(c("Najpopularniejsze kombinacje dwóch wycieczek odwiedzanych przez tych samych klientów" = 3), 
+                               bold = TRUE, color = "white", background = "#b9b9b9")
+  
 ```
-Można zauważyć, że najwięcej klientów wybiera `r data4$wycieczka_1[1]`
-oraz `r data4$wycieczka_2[1]`.
+Można zauważyć, że najwięcej klientów wybiera `r data4$"Wycieczka pierwsza"[1]`
+oraz `r data4$"Wycieczka druga"[1]`.
 
 
-## Wynik 5 - średnia liczba
+## Wynik 5
 
-Zwróćmy ug=wagę na to, ile osób bliskich deklarują nasi klienci.
 
 ```{r wynik5, echo=FALSE}
 query5 <- "SELECT 
@@ -275,7 +344,7 @@ FROM (
 data5 <- dbGetQuery(conn, query5)
 ```
 
-Jak można zauważyć, średnia liczba osób bliskich, którą deklarował pojecynczy klient wyosi: `r data5$srednia_liczba_bliskich`.
+Analizując nasze dane z obecnych lat możemy wywnioskować, że średnia liczba osób bliskich, która uczestniczyła w naszych wycieczkach wynosi: `r data5$srednia_liczba_bliskich`.
 
 # Wykresy
 
@@ -283,7 +352,7 @@ Jak można zauważyć, średnia liczba osób bliskich, którą deklarował pojec
 
 Poniższy wykres przedstawia ilość klientów w określonych miesiącach.
 
-```{r wykres1, echo=FALSE}
+```{r wykres1, echo=FALSE, warning=FALSE, message=FALSE}
 query6 <- "SELECT 
     EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
     EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
