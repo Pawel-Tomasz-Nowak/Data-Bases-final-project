@@ -12,6 +12,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 library(ggplot2)
+library(plotly)
 library(kableExtra)
 ```
 
@@ -28,28 +29,6 @@ conn <- dbConnect(RMariaDB::MariaDB(),
 # Wstęp
 
 Firma Wombat Grylls sp. z o.o. specjalizuje się w organizowaniu wycieczek do miast, które odegrały istotną rolę w historii matematyki. W ramach naszego projektu opracowujemy kompletną bazę danych wspierającą organizację takich wyjazdów. Umożliwia ona przechowywanie i zarządzanie informacjami o miastach, atrakcjach turystycznych, klientach, pracownikach, a także transakcjach i organizowanych wycieczkach. Projekt ten pozwala na efektywne zarządzanie danymi i umożliwia szybkie tworzenie analiz wspierających decyzje biznesowe.
-
-# Opis danych
-
-Nasza baza danych składa się z następujących tabel:
-
-1. **Miasta** - Zawiera informacje o miastach, w których żyli znani matematycy. Przechowywane dane obejmują nazwę miasta, cenę wyjazdu, długość wycieczki oraz nazwisko matematyka związanego z tym miejscem.
-
-2. **Atrakcje w mieście** - Przechowuje dane o atrakcjach turystycznych dostępnych w poszczególnych miastach.
-
-3. **Wycieczki** - Obejmuje informacje o organizowanych wyjazdach, takie jak data rozpoczęcia, czy wycieczka się odbyła oraz do jakiego miasta była skierowana.
-
-4. **Klienci** - Zawiera dane osobowe klientów, takie jak imię, nazwisko, adres e-mail, status studenta oraz przysługujące im zniżki.
-
-5. **Pracownicy** - Informacje o pracownikach zaangażowanych w organizację wycieczek, w tym ich stanowisko oraz dane kontaktowe.
-
-6. **Transakcje** - Rejestruje informacje o zakupach wycieczek przez klientów, takie jak kwota, data transakcji oraz powiązane wycieczki.
-
-7. **Relacje bliskości** - Łączy klientów z ich bliskimi osobami, co umożliwia rejestrację grupowych rezerwacji.
-
-8. **Wynagrodzenie** - Przechowuje informacje o stawkach wynagrodzenia dziennego przypisanych do poszczególnych stanowisk.
-
-9. **Wycieczki i pracownicy** - Łączy wycieczki z przypisanymi do nich pracownikami, co pozwala na tworzenie grafików i zarządzanie zasobami ludzkimi.
 
 # Znaczenie projektu
 
@@ -400,13 +379,21 @@ data6 <- dbGetQuery(conn, query6)
 
 data6_filtered <- data6[data6$Miesiac >= 6 & data6$Miesiac <= 9, ]
 
+miesiace <- c("Czerwiec", "Lipiec", "Sierpień", "Wrzesień")
+
+
+data6_filtered$Miesiac <- factor(data6_filtered$Miesiac, levels = 6:9, labels = miesiace)
+
+
 # Tworzenie wykresu słupkowego
-ggplot(data6_filtered, aes(x = factor(Miesiac, levels = 6:9), 
-                         y = Liczba_Klientow, 
-                         fill = factor(Rok))) +
+p1 <- ggplot(data6_filtered, aes(x = Miesiac, 
+                                 y = Liczba_Klientow, 
+                                 fill = factor(Rok), 
+                                 text = paste("Rok:", Rok, 
+                                              "<br>Miesiąc:", Miesiac, 
+                                              "<br>Liczba klientów:", Liczba_Klientow))) +
   geom_bar(stat = "identity", position = "dodge", color = "black") +
-  scale_fill_manual(values = c("magenta3", "purple", "lightyellow", "lightblue", "lightgreen",
-                               "lightcyan")) +
+  scale_fill_manual(values = c("magenta3", "purple", "lightyellow", "lightblue", "lightgreen", "lightcyan")) +
   labs(
     title = "Liczba klientów w miesiącach letnich (czerwiec-wrzesień)",
     x = "Miesiąc",
@@ -438,6 +425,7 @@ if (all(data6_summary$Diff[-1] > 0, na.rm = TRUE)) {
   wniosek <- "Dane są zbyt ograniczone, by jednoznacznie stwierdzić, czy firma rośnie, czy podupada."
 }
 
+ggplotly(p1, tooltip = "text")
 ```
 
 Patrząc na wykres można zayważyć, że: `r wniosek`
@@ -465,20 +453,66 @@ ORDER BY
 
 data7 <- dbGetQuery(conn, query7)
 
-ggplot(data7, aes(x = miasto, y = udzial_procentowy, fill = miasto)) +
+p2 <- ggplot(data7, aes(x = miasto, y = udzial_procentowy, fill = miasto,
+                  text = paste("Miasto:", miasto, 
+                  "<br>Udział procentowy:", udzial_procentowy))) +
   geom_bar(stat = "identity", width = 1, color = "white", alpha = 0.6) +
   theme(legend.title = element_blank()) +
   theme(axis.text.x = element_blank()) +
   labs(y="Procent" ,title = "Udział procentowy miast w przychodach")
+
+ggplotly(p2, tooltip = "text")
 ```
 
-<Tu wniosek jakiś...>
 
 ## Wykres 3
 
-Poniższy wykres słupkowy przedstawia, ile klientów średnio wybiera się na wycieczkę.
-```{r wykres3, echo=FALSE}
+Sprawdźmy, ilu naszych osób to studenci.
+
+```{r wykres3, echo=FALSE, message=FALSE}
+
 query8 <- "SELECT 
+    EXTRACT(YEAR FROM T.data_transakcji) AS Rok,
+    EXTRACT(MONTH FROM T.data_transakcji) AS Miesiac,
+    COUNT(DISTINCT T.id_klienta) AS Liczba_Studentów
+FROM 
+    Transakcje T
+JOIN 
+    Klienci K ON T.id_klienta = K.id_klienta
+WHERE 
+    ROUND(K.znizka, 2) = 0.49 
+GROUP BY 
+    EXTRACT(YEAR FROM T.data_transakcji), EXTRACT(MONTH FROM T.data_transakcji)
+ORDER BY 
+    Rok, Miesiac;"
+
+data8 <- dbGetQuery(conn, query8)
+
+data8$Data <- as.Date(paste(data8$Rok, data8$Miesiac, "01", sep = "-"))
+
+p3 <- ggplot(data8, aes(x = Data, 
+                        y = Liczba_Studentów, 
+                        group = 1, 
+                        text = paste("Data:", format(Data, "%Y-%m"), 
+                                     "<br>Liczba studentów:", Liczba_Studentów))) +
+  geom_line(color = "#A3ED7E", linewidth = 1) +
+  geom_point(color = "#B382ED", size = 2) +
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "3 months") + 
+  labs(title = "Liczba studentów w poszczególnych miesiącach",
+       x = "Data",
+       y = "Liczba Studentów") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+ggplotly(p3, tooltip = "text")
+```
+
+
+## Wykres 4
+
+Poniższy wykres słupkowy przedstawia, ile klientów średnio wybiera się na wycieczkę.
+```{r wykres4, echo=FALSE}
+query9 <- "SELECT 
     m.miasto AS wycieczka,
     ROUND(AVG(liczba_klientow), 2) AS średnia_liczba_klientów
 FROM (
@@ -500,17 +534,21 @@ GROUP BY
 ORDER BY 
     średnia_liczba_klientów DESC;"
 
-data8 <- dbGetQuery(conn, query8)
+data9 <- dbGetQuery(conn, query9)
 
-ggplot(data8, aes(x=wycieczka, y=średnia_liczba_klientów, fill=wycieczka))+
+p4 <- ggplot(data9, aes(x=wycieczka, 
+                  y=średnia_liczba_klientów, 
+                  fill=wycieczka, 
+                  text = paste("Miasto:", wycieczka, 
+                  "<br>Średnia liczba osób:", średnia_liczba_klientów)))+
   geom_bar(stat = "identity") +
   ggtitle("Średnia liczba osób na wycieczki w danym mieście")+
   labs(x = "Miasto", y = "Średnia liczba osób")+
   theme_minimal()+
   theme(axis.text.x = element_blank())
-```
 
-<I tutaj też wniosek jakiś by się przydał...>
+ggplotly(p4, tooltip = "text")
+```
 
 
 
