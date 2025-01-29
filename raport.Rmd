@@ -467,7 +467,8 @@ ggplotly(p2, tooltip = "text")
 
 ## Wykres 3
 
-Sprawdźmy, ilu naszych osób to studenci.
+Sprawdźmy, ilu naszych osób to studenci (pomarańczową kropką oznaczono miesiąc, 
+w którym największą liczbą studentów skorzystała z naszych usług):
 
 ```{r wykres3, echo=FALSE, message=FALSE}
 
@@ -490,14 +491,20 @@ data8 <- dbGetQuery(conn, query8)
 
 data8$Data <- as.Date(paste(data8$Rok, data8$Miesiac, "01", sep = "-"))
 
+max_students <- max(data8$Liczba_Studentów)
+
+data8$Kolor <- ifelse(data8$Liczba_Studentów == max_students, "#EDAB56", "#B382ED")
+
 p3 <- ggplot(data8, aes(x = Data, 
                         y = Liczba_Studentów, 
                         group = 1, 
                         text = paste("Data:", format(Data, "%Y-%m"), 
                                      "<br>Liczba studentów:", Liczba_Studentów))) +
   geom_line(color = "#A3ED7E", linewidth = 1) +
-  geom_point(color = "#B382ED", size = 2) +
-  scale_x_date(date_labels = "%Y-%m", date_breaks = "3 months") + 
+  geom_point(aes(color = Kolor), size = 2) +
+  scale_color_identity() +
+  guides(color = "none") +
+  scale_x_date(date_labels = "%Y-%m", date_breaks = "2 months") + 
   labs(title = "Liczba studentów w poszczególnych miesiącach",
        x = "Data",
        y = "Liczba Studentów") +
@@ -505,8 +512,11 @@ p3 <- ggplot(data8, aes(x = Data,
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggplotly(p3, tooltip = "text")
+
+ilosc_wszystkich_studentow <- sum(data8$Liczba_Studentów)
 ```
 
+Wszystkich studentów, którzy skorzystali z usług jest `r ilosc_wszystkich_studentow`
 
 ## Wykres 4
 
@@ -549,7 +559,6 @@ p4 <- ggplot(data9, aes(x=wycieczka,
 
 ggplotly(p4, tooltip = "text")
 ```
-
 
 
 ```{r db-close, echo=FALSE}
