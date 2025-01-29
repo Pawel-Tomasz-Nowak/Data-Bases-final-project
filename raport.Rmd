@@ -84,6 +84,11 @@ ORDER BY
 
 df1 <- dbGetQuery(conn, query1)
 
+max_zainteresowanych <- max(df1$liczba_osob_zainteresowanych)
+
+najpopularniejsze <- df1 %>%
+  filter(liczba_osob_zainteresowanych == max_zainteresowanych)
+
 data1 <- head(df1)
 
 data1 <- data1 %>%
@@ -97,8 +102,8 @@ kable(data1, align = "l") %>%
   row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
   kableExtra::add_header_above(c("Liczba osób zainteresowanych na poszczególne wycieczki" = 2), bold = TRUE, color = "white", background = "#b9b9b9")
 ```
-Jak widać, najpopularniejszą wycieczką jest `r data1$Wycieczka[1]`. 
-Liczba zainteresowanych nią osób to: `r data1$"Liczba osób zainteresowanych"[1]`
+Jak widać, najpopularniejszą wycieczką jest `r najpopularniejsze$wycieczka`. 
+Liczba zainteresowanych nią osób to: `r najpopularniejsze$liczba_osob_zainteresowanych`
 
 ## Wynik 2
 
@@ -176,7 +181,10 @@ data2_oplacalna <- df2 %>%
     Zysk = zysk
   )
 
+max_zysk <- max(data2_oplacalna$Zysk)
 
+wycieczki_max_zysk <- data2_oplacalna %>%
+  filter(Zysk == max_zysk)
 
 kable(data2_oplacalna, align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
@@ -186,8 +194,9 @@ kable(data2_oplacalna, align = "l") %>%
 ```
 
 
-Łatwo widać, że największe zyski przynosi nam wycieczka `r data2_oplacalna$Wycieczka[1]`. 
-Zysk tej wycieczki wynosi: `r format(data2_oplacalna$Zysk[1], scientific = FALSE)`, a przychód: `r format(data2_oplacalna$Przychód[1], scientific = FALSE)`.
+Łatwo widać, że największe zyski mają te wycieczki: `r wycieczki_max_zysk$Wycieczka`. 
+Zysk tych wycieczek wynosi: `r format(wycieczki_max_zysk$Zysk, scientific = FALSE)`, 
+a przychód: `r format(wycieczki_max_zysk$Przychód, scientific = FALSE)`.
 
 
 
@@ -203,6 +212,11 @@ data2_nieoplacalna <- df2 %>%
     Zysk = zysk
   )
 
+min_zysk <- min(data2_nieoplacalna$Zysk)
+
+wycieczki_min_zysk <- data2_nieoplacalna %>%
+  filter(Zysk == min_zysk)
+
 kable(data2_nieoplacalna, align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
   row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
@@ -210,12 +224,12 @@ kable(data2_nieoplacalna, align = "l") %>%
 ```
 
 
-Nieopłacalna jest za to wycieczka do miasta `r data2_nieoplacalna$Wycieczka`.
+Nieopłacale wycieczki są do takich miast jak: `r wycieczki_min_zysk$Wycieczka`.
 
 
 ## Wynik 3
 
-Należy zwrócić uwagę na to, do jakich miast nasi klienci wracają najchętniej.
+Należy zwrócić uwagę na to, po której wycieczce nasi klienci wracają najchętniej.
 
 ```{r wynik3, echo=FALSE}
 query3 <- "WITH Klienci_Wycieczki AS (
@@ -269,19 +283,31 @@ data3 <- data3 %>%
     Procent = procent_powrotow
   )
 
+max_procent <- max(data3$Procent)
+
+wycieczki_max_procent <- data3 %>%
+  filter(Procent == max_procent)
+
+min_procent <- min(data3$Procent)
+
+wycieczki_min_procent <- data3 %>%
+  filter(Procent == min_procent)
+
 kable(data3, align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
   row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
   kableExtra::add_header_above(c("Liczba osób powracających na nasze wycieczki" = 4), bold = TRUE, color = "white", background = "#b9b9b9") %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
-Jak wynika z tabeli, najwięcej (`r data3$Procent[1]`%) klientów powraca 
-do miasta `r data3$Wycieczka[1]`. Najmniej osób (`r tail(data3$Procent,1)`%)
-ponownie wybiera się do `r tail(data3$Wycieczka, 1)`.
+Jak wynika z tabeli, najwięcej (`r wycieczki_max_procent$Procent`%) klientów powraca 
+do miast: `r wycieczki_max_procent$Wycieczka`. 
+
+Najmniej osób (`r wycieczki_min_procent$Procent`%)
+ponownie wybiera się do `r wycieczki_min_procent$Wycieczka`.
 
 ## Wynik 4
 
-W poniższej tabeli można zobaczyć, do jakich miejsc najchętniej wybierają się nasi klienci.
+W poniższej tabeli można zobaczyć, do jakich dwóch miejsc najchętniej wybierają się nasi klienci.
 ```{r wynik4, echo=FALSE}
 query4 <- "SELECT 
     m1.miasto AS wycieczka_1,
@@ -314,6 +340,11 @@ data4 <- data4 %>%
     "Liczba klientów" = liczba_klientow
   )
 
+max_klientow <- max(data4$"Liczba klientów")
+
+najpopularniejsze_kombinacje <- data4 %>%
+  filter(`Liczba klientów` == max_klientow)
+
 kable(data4, align = "l") %>%
   kable_styling(bootstrap_options = c("striped", "bordered", "hover")) %>%
   row_spec(0, bold = TRUE, background = "#d8d8d8") %>%
@@ -321,8 +352,9 @@ kable(data4, align = "l") %>%
                                bold = TRUE, color = "white", background = "#b9b9b9")
   
 ```
-Można zauważyć, że najwięcej klientów wybiera `r data4$"Wycieczka pierwsza"[1]`
-oraz `r data4$"Wycieczka druga"[1]`.
+Najpopularniejsze kombinacje dwóch wycieczek to:  
+`r paste(najpopularniejsze_kombinacje$"Wycieczka pierwsza", "i", najpopularniejsze_kombinacje$"Wycieczka druga", collapse = "; ")`.  
+Każdą z tych kombinacji wybrało `r max_klientow` klientów.
 
 
 ## Wynik 5
