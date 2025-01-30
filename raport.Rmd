@@ -278,11 +278,11 @@ kable(data3, align = "l") %>%
   kableExtra::add_header_above(c("Liczba osób powracających na nasze wycieczki" = 4), bold = TRUE, color = "white", background = "#b9b9b9") %>%
   kableExtra::scroll_box(width = "100%", height = "400px")
 ```
-Jak wynika z tabeli, najwięcej (`r wycieczki_max_procent$Procent`%) klientów powraca 
-do miast: `r wycieczki_max_procent$Wycieczka`. 
+Jak wynika z tabeli, najwięcej (`r wycieczki_max_procent$Procent`%) klientów 
+ponownie skorzystało z naszej oferty po wycieczkach do miast: `r wycieczki_max_procent$Wycieczka`.
 
 Najmniej osób (`r wycieczki_min_procent$Procent`%)
-ponownie wybiera się do `r wycieczki_min_procent$Wycieczka`.
+powraca do naszych usług po wcieczce z `r wycieczki_min_procent$Wycieczka`.
 
 ## Wynik 4
 
